@@ -1,0 +1,185 @@
+{
+  "info": {
+    "name": "05_Negative Tests",
+    "description": "Error handling and negative scenario tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET Non-existent Post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== Negative Test: Non-existent Resource ===');",
+              "console.log('Status Code: ' + pm.response.code);",
+              "",
+              "pm.test('Status code is 200', function() {",
+              "    pm.expect(pm.response.code).to.equal(200);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.test('Response is empty object for non-existent post', function() {",
+              "    pm.expect(Object.keys(jsonData).length).to.equal(0);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/posts/999999",
+          "host": ["{{base_url}}"],
+          "path": ["posts", "999999"]
+        }
+      }
+    },
+    {
+      "name": "POST with Invalid Data",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== Negative Test: Invalid Data ===');",
+              "",
+              "pm.test('Response is received', function() {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.test('Response contains ID', function() {",
+              "    pm.expect(jsonData).to.have.property('id');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "{{content_type}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"\",\n  \"body\": \"\",\n  \"userId\": \"invalid\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/posts",
+          "host": ["{{base_url}}"],
+          "path": ["posts"]
+        }
+      }
+    },
+    {
+      "name": "PUT Non-existent Post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== Negative Test: PUT Non-existent ===');",
+              "",
+              "pm.test('Response is received', function() {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.test('Has response body', function() {",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "{{content_type}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated Title\",\n  \"body\": \"Updated Body\",\n  \"userId\": 1\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/posts/999999",
+          "host": ["{{base_url}}"],
+          "path": ["posts", "999999"]
+        }
+      }
+    },
+    {
+      "name": "DELETE Non-existent Post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== Negative Test: DELETE Non-existent ===');",
+              "",
+              "pm.test('Delete returns success', function() {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/posts/999999",
+          "host": ["{{base_url}}"],
+          "path": ["posts", "999999"]
+        }
+      }
+    },
+    {
+      "name": "Invalid HTTP Method",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== Negative Test: Invalid HTTP Method ===');",
+              "",
+              "pm.test('Response received for invalid method', function() {",
+              "    pm.expect(pm.response.code).to.not.be.undefined;",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "{{content_type}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Partial Update\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/posts/1",
+          "host": ["{{base_url}}"],
+          "path": ["posts", "1"]
+        }
+      }
+    }
+  ]
+}

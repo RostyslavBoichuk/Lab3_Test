@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Test Post 1",
+    "body": "This is the body of test post number 1",
+    "userId": 1
+  },
+  {
+    "title": "Test Post 2",
+    "body": "This is the body of test post number 2",
+    "userId": 2
+  },
+  {
+    "title": "Automation Testing Sample",
+    "body": "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+    "userId": 1
+  },
+  {
+    "title": "API Testing with Postman",
+    "body": "Complete guide to REST API testing and validation",
+    "userId": 3
+  },
+  {
+    "title": "Data-Driven Test Case",
+    "body": "Testing with multiple datasets to ensure coverage",
+    "userId": 2
+  },
+  {
+    "title": "Performance Testing Sample",
+    "body": "Monitoring response times and system performance",
+    "userId": 5
+  },
+  {
+    "title": "Negative Test Scenario",
+    "body": "Testing API behavior with invalid or edge case data",
+    "userId": 1
+  },
+  {
+    "title": "End-to-End Workflow Test",
+    "body": "Complete workflow testing from creation to deletion",
+    "userId": 4
+  }
+]

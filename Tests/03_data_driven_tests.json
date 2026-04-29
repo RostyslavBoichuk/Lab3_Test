@@ -1,0 +1,151 @@
+{
+  "info": {
+    "name": "03_Data-Driven Tests",
+    "description": "Data-driven parameterized tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "POST Create Post (Data Driven)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "var testData = pm.iterationData.get('title') || 'Test Post Title';",
+              "var testBody = pm.iterationData.get('body') || 'Test Post Body';",
+              "var testUserId = pm.iterationData.get('userId') || 1;",
+              "",
+              "pm.variables.set('current_title', testData);",
+              "pm.variables.set('current_body', testBody);",
+              "pm.variables.set('current_userId', testUserId);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== Data-Driven POST Test ===');",
+              "console.log('Status Code: ' + pm.response.code);",
+              "",
+              "pm.test('Status code is 201 or 200', function() {",
+              "    pm.expect([200, 201]).to.include(pm.response.code);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "var expectedTitle = pm.variables.get('current_title');",
+              "var expectedBody = pm.variables.get('current_body');",
+              "",
+              "pm.test('Title matches sent data', function() {",
+              "    pm.expect(jsonData.title).to.equal(expectedTitle);",
+              "});",
+              "",
+              "pm.test('Body matches sent data', function() {",
+              "    pm.expect(jsonData.body).to.equal(expectedBody);",
+              "});",
+              "",
+              "if(jsonData.id) {",
+              "    pm.environment.set('created_post_id', jsonData.id.toString());",
+              "    console.log('Created post ID: ' + jsonData.id);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "{{content_type}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"{{current_title}}\",\n  \"body\": \"{{current_body}}\",\n  \"userId\": {{current_userId}}\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/posts",
+          "host": ["{{base_url}}"],
+          "path": ["posts"]
+        }
+      }
+    },
+    {
+      "name": "POST with Random Data",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "var randomId = Math.floor(Math.random() * 1000);",
+              "var randomUserId = Math.floor(Math.random() * 10) + 1;",
+              "var timestamp = new Date().getTime();",
+              "",
+              "var titles = [",
+              "    'Automated Test Title ' + randomId,",
+              "    'Dynamic Post ' + timestamp,",
+              "    'Test Data Generation ' + randomId,",
+              "    'Random Content ' + randomId",
+              "];",
+              "",
+              "var bodies = [",
+              "    'This is automated test body generated at ' + new Date().toISOString(),",
+              "    'Random content for testing purposes with ID: ' + randomId,",
+              "    'Test post body with timestamp: ' + timestamp,",
+              "    'Generated content for validation testing'",
+              "];",
+              "",
+              "var selectedTitle = titles[Math.floor(Math.random() * titles.length)];",
+              "var selectedBody = bodies[Math.floor(Math.random() * bodies.length)];",
+              "",
+              "pm.variables.set('generated_title', selectedTitle);",
+              "pm.variables.set('generated_body', selectedBody);",
+              "pm.variables.set('generated_userId', randomUserId);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 201 or 200', function() {",
+              "    pm.expect([200, 201]).to.include(pm.response.code);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.test('Response contains created data', function() {",
+              "    pm.expect(jsonData).to.have.property('title');",
+              "    pm.expect(jsonData).to.have.property('body');",
+              "    pm.expect(jsonData).to.have.property('userId');",
+              "});",
+              "",
+              "console.log('Random data test - Generated Title: ' + pm.variables.get('generated_title'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "{{content_type}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"{{generated_title}}\",\n  \"body\": \"{{generated_body}}\",\n  \"userId\": {{generated_userId}}\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/posts",
+          "host": ["{{base_url}}"],
+          "path": ["posts"]
+        }
+      }
+    }
+  ]
+}

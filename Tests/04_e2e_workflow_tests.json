@@ -1,0 +1,249 @@
+{
+  "info": {
+    "name": "04_E2E Workflow Tests",
+    "description": "End-to-end CRUD workflow tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "E2E Step 1 - Create Post",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "var timestamp = new Date().getTime();",
+              "pm.variables.set('e2e_title', 'E2E Test Post ' + timestamp);",
+              "pm.variables.set('e2e_body', 'Testing complete workflow with timestamp: ' + timestamp);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== E2E Step 1: CREATE ===');",
+              "",
+              "pm.test('Create post returns 201 or 200', function() {",
+              "    pm.expect([200, 201]).to.include(pm.response.code);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.test('Create post returns ID', function() {",
+              "    pm.expect(jsonData).to.have.property('id');",
+              "});",
+              "",
+              "pm.environment.set('e2e_post_id', jsonData.id);",
+              "console.log('Created post ID: ' + jsonData.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "{{content_type}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"{{e2e_title}}\",\n  \"body\": \"{{e2e_body}}\",\n  \"userId\": {{user_id}}\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/posts",
+          "host": ["{{base_url}}"],
+          "path": ["posts"]
+        }
+      }
+    },
+    {
+      "name": "E2E Step 2 - Retrieve Created Post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== E2E Step 2: RETRIEVE ===');",
+              "",
+              "pm.test('Get returns 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "var expectedId = parseInt(pm.environment.get('e2e_post_id'));",
+              "var expectedTitle = pm.variables.get('e2e_title');",
+              "",
+              "pm.test('Retrieved post ID matches', function() {",
+              "    pm.expect(jsonData.id).to.equal(expectedId);",
+              "});",
+              "",
+              "pm.test('Retrieved post title matches', function() {",
+              "    pm.expect(jsonData.title).to.equal(expectedTitle);",
+              "});",
+              "",
+              "console.log('Retrieved post confirmed: ' + jsonData.title);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/posts/{{e2e_post_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["posts", "{{e2e_post_id}}"]
+        }
+      }
+    },
+    {
+      "name": "E2E Step 3 - Update Post",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "var timestamp = new Date().getTime();",
+              "pm.variables.set('e2e_updated_title', 'E2E Updated Post ' + timestamp);",
+              "pm.variables.set('e2e_updated_body', 'Updated content at ' + timestamp);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== E2E Step 3: UPDATE ===');",
+              "",
+              "pm.test('Update returns 200', function() {",
+              "    pm.expect([200, 201]).to.include(pm.response.code);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "var expectedTitle = pm.variables.get('e2e_updated_title');",
+              "",
+              "pm.test('Updated post title is correct', function() {",
+              "    pm.expect(jsonData.title).to.equal(expectedTitle);",
+              "});",
+              "",
+              "console.log('Post updated successfully');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "{{content_type}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": {{e2e_post_id}},\n  \"title\": \"{{e2e_updated_title}}\",\n  \"body\": \"{{e2e_updated_body}}\",\n  \"userId\": {{user_id}}\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/posts/{{e2e_post_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["posts", "{{e2e_post_id}}"]
+        }
+      }
+    },
+    {
+      "name": "E2E Step 4 - Verify Update",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== E2E Step 4: VERIFY UPDATE ===');",
+              "",
+              "pm.test('Get returns 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "var expectedTitle = pm.variables.get('e2e_updated_title');",
+              "",
+              "pm.test('Updated post title verified', function() {",
+              "    pm.expect(jsonData.title).to.equal(expectedTitle);",
+              "});",
+              "",
+              "console.log('Updated post confirmed');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/posts/{{e2e_post_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["posts", "{{e2e_post_id}}"]
+        }
+      }
+    },
+    {
+      "name": "E2E Step 5 - Delete Post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== E2E Step 5: DELETE ===');",
+              "",
+              "pm.test('Delete returns 200 or 204', function() {",
+              "    pm.expect([200, 204]).to.include(pm.response.code);",
+              "});",
+              "",
+              "console.log('Post deleted successfully');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/posts/{{e2e_post_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["posts", "{{e2e_post_id}}"]
+        }
+      }
+    },
+    {
+      "name": "E2E Step 6 - Verify Deletion",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log('=== E2E Step 6: VERIFY DELETION ===');",
+              "",
+              "pm.test('Request completed after deletion', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "console.log('E2E workflow completed successfully');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/posts/{{e2e_post_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["posts", "{{e2e_post_id}}"]
+        }
+      }
+    }
+  ]
+}
