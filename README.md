@@ -4,13 +4,13 @@ This project contains a comprehensive automated testing suite for the JSONPlaceh
 
 ---
 
-## 🚀 Project Goal
+## Project Goal
 
 To implement a full-scale API testing framework including functional verification, JSON Schema validation, data-driven testing, and end-to-end (E2E) workflow automation.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 The repository is organized to separate test logic, data, and reporting assets:
 
@@ -32,7 +32,7 @@ report.html — Generated visual test report
 
 ---
 
-## 🛠️ Requirements
+## Requirements
 
 To run this test suite, you need:
 
@@ -46,7 +46,7 @@ npm install -g newman-reporter-htmlextra
 
 ---
 
-## ⚙️ Automated Execution
+## Automated Execution
 
 Run the full suite:
 
@@ -62,7 +62,7 @@ The script will:
 
 ---
 
-## 🧪 Test Coverage
+## Test Coverage
 
 The suite includes 14 requirements:
 
@@ -89,7 +89,7 @@ POST → GET → PUT → DELETE → GET
 
 ---
 
-## 📊 Quality Metrics
+## Quality Metrics
 
 - Success Rate: ~80.4% (API design issues detected)
 - Average Response Time: ~75ms
@@ -97,7 +97,7 @@ POST → GET → PUT → DELETE → GET
 
 ---
 
-## 🐞 Identified Issues
+## Identified Issues
 
 During testing, several architectural issues were found in the JSONPlaceholder API:
 
